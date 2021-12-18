@@ -41,14 +41,10 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
 }
 
-//kotlin config
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-}
-
-//graalvm config
+//native build config
 graalvmNative.binaries.main {
-    classpath(processAotMainResources.outputs, processResources.outputs, compileKotlin.outputs)
+    javaLauncher = javaToolchains.launcherFor {
+        //if you don’t run Gradle itself with GraalVM, set toolchain version to current JDK, and don't forget to setup GRAALVM_HOME environment variable
+        languageVersion = JavaLanguageVersion.of(JavaVersion.current().majorVersion)
+    }
 }
